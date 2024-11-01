@@ -39,11 +39,13 @@ export const create = async (req: Request, res: Response): Promise<void> => {
       data: matricula
     });
   } catch (error: any) {
+    console.log(error.message)
     res.status(500).json({ status: false, message: "Erro ao criar matrícula", error: error.message });
   }
 };
 
 export const show = async (req: Request, res: Response): Promise<void> => {
+  
   const { cod_matricula } = req.params;
 
   try {
