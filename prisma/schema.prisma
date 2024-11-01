@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  name            String
+  email           String    @unique
+  password        String
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  rememberToken   String?   @map("remember_token")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @default(now()) @map("updated_at")
+}
+
+model Aluno {
+  cod_aluno       Int         @id @default(autoincrement())
+  nome            String
+  bi              String
+  data_nascimento DateTime
+  genero          String
+  morada          String
+  telefone        String
+  matriculas      Matricula[]
+  propinas        Propina[]
+}
+
+model Matricula {
+  n_matricula Int      @id @default(autoincrement())
+  cod_curso   Int
+  cod_aluno   Int
+  data        DateTime
+  cod_periodo Int
+
+  aluno    Aluno     @relation(fields: [cod_aluno], references: [cod_aluno])
+  curso    Curso     @relation(fields: [cod_curso], references: [cod_curso])
+  periodo  Periodo   @relation(fields: [cod_periodo], references: [cod_periodo])
+  propinas Propina[] @relation("MatriculaToPropina")
+}
+
+model Propina {
+  cod_propina     Int    @id @default(autoincrement())
+  valor           Float
+  n_matricula     Int
+  cod_mes         Int
+  forma_pagamento String
+
+  matricula      Matricula @relation("MatriculaToPropina", fields: [n_matricula], references: [n_matricula])
+  mes            Mes       @relation(fields: [cod_mes], references: [cod_mes])
+  Aluno          Aluno?    @relation(fields: [alunoCod_aluno], references: [cod_aluno])
+  alunoCod_aluno Int?
+}
+
+model Periodo {
+  cod_periodo Int    @id @default(autoincrement())
+  descricao   String
+
+  matriculas Matricula[]
+}
+
+model Mes {
+  cod_mes   Int    @id @default(autoincrement())
+  descricao String
+
+  propinas Propina[]
+}
+
+model Curso {
+  cod_curso  Int    @id @default(autoincrement())
+  descricao  String
+  tipo_curso String
+
+  matriculas Matricula[]
+}
