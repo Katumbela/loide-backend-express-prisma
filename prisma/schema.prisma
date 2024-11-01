@@ -38,15 +38,15 @@ model Aluno {
 }
 
 model Matricula {
-  n_matricula Int      @id @default(autoincrement())
+  n_matricula Int       @id @default(autoincrement())
   cod_curso   Int
   cod_aluno   Int
-  data        DateTime
+  data        DateTime  @default(now())
   cod_periodo Int
-  aluno    Aluno     @relation(fields: [cod_aluno], references: [cod_aluno])
-  curso    Curso     @relation(fields: [cod_curso], references: [cod_curso])
-  periodo  Periodo   @relation(fields: [cod_periodo], references: [cod_periodo])
-  propinas Propina[] @relation("MatriculaToPropina")
+  aluno       Aluno     @relation(fields: [cod_aluno], references: [cod_aluno])
+  curso       Curso     @relation(fields: [cod_curso], references: [cod_curso])
+  periodo     Periodo   @relation(fields: [cod_periodo], references: [cod_periodo])
+  propinas    Propina[] @relation("MatriculaToPropina")
 }
 
 model Propina {
