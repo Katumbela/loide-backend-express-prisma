@@ -1,36 +1,24 @@
- 
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 const tiposCursos = [
-  'Ciencias Fisicas e Biologicas',
-  'Ciências Econômicas e Jurídicas',
-  'Direito',
+  { cod_curso: 10, descricao: '10ª classe', tipo_curso: 'Ciencias Fisicas e Biologicas' },
+  { cod_curso: 11, descricao: '11ª classe', tipo_curso: 'Ciências Econômicas e Jurídicas' },
+  { cod_curso: 12, descricao: '12ª classe', tipo_curso: 'Direito' },
 ];
 
 export async function cursoSeeder() {
+  const cursos = Array.from({ length: 9 }, (_, i) => ({
+    cod_curso: i + 1,
+    descricao: `${i + 1}ª classe`,
+    tipo_curso: '',
+  })).concat(tiposCursos);
 
-  for (let i = 1; i <= 9; i++) {
-    await prisma.curso.create({
-      data: {
-        cod_curso: i,
-        descricao: `${i}ª classe`,
-        tipo_curso: '',
-      },
-    });
-  }
-
-
-  for (let i = 10; i <= 12; i++) {
-    await prisma.curso.create({
-      data: {
-        cod_curso: i,
-        descricao: `${i}ª classe`,
-        tipo_curso: tiposCursos[i - 10],
-      },
-    });
-  }
+  await prisma.curso.createMany({
+    data: cursos,
+    skipDuplicates: true,
+  });
 
   console.log('Cursos seedados com sucesso!');
 }
