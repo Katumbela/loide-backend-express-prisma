@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
+    "seed": "ts-node src/seeders/db.seeder.ts",
     "dev": "ts-node-dev src/index.ts"
   },
   "keywords": [],
