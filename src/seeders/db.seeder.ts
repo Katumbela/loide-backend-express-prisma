@@ -1,4 +1,4 @@
-
+// src/seeders/database.seeder.ts
 
 import { PrismaClient } from '@prisma/client';
 import { userSeeder } from './user.seeder';
@@ -18,7 +18,7 @@ async function main() {
   await periodoSeeder();
   await cursoSeeder();
   await alunoSeeder();
-  await matriculaSeeder();
+  await matriculaSeeder(prisma);
 
   console.log('Banco de dados seedado com sucesso!');
 }
