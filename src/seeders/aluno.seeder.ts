@@ -1,4 +1,4 @@
- 
+
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -116,12 +116,26 @@ const alunos = [
 
 export async function alunoSeeder() {
   for (const aluno of alunos) {
-    await prisma.aluno.create({
-      data: aluno,
-    });
+    try {
+      const existingAluno = await prisma.aluno.findUnique({
+        where: { cod_aluno: aluno.cod_aluno },
+      });
+
+      if (!existingAluno) {
+        await prisma.aluno.create({
+          data: aluno,
+        });
+      } else {
+        console.log(`Aluno ${aluno.cod_aluno} já existe. Ignorando...`);
+      }
+    } catch (error) {
+      console.error(`Erro ao inserir o aluno ${aluno.cod_aluno}:`, error);
+    }
   }
   console.log('Alunos seedados com sucesso!');
 }
+
+
 
 alunoSeeder()
   .catch((e) => {
