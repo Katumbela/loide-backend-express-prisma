@@ -13,21 +13,22 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const store = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   if (!name || !email || !password) {
     res.status(400).json({ status: false, message: "Nome, email e senha são obrigatórios." });
     return;
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
     const user = await prisma.user.create({
       data: {
         name,
         email,
-        password: hashedPassword
+        role,
+        password
       }
     });
     res.status(201).json({ status: true, message: 'Usuário criado com sucesso!', data: user });
@@ -105,7 +106,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     if (!user) {
       res.status(404).json({ status: false, message: "Usuário não encontrado." });
-      return;  
+      return;
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
