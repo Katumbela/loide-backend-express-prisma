@@ -1,10 +1,10 @@
- 
-
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function userSeeder() {
+  await prisma.user.deleteMany(); 
+
   const users = [
     {
       name: 'Joao Afonso Katumbela',
@@ -26,9 +26,9 @@ export async function userSeeder() {
     },
   ];
 
- 
   await prisma.user.createMany({
     data: users,
+    skipDuplicates: true,  
   });
 
   console.log('Usuários seedados com sucesso!');
