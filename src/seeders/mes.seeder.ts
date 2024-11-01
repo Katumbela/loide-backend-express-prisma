@@ -1,11 +1,10 @@
- 
-
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function mesSeeder() {
- 
+  await prisma.mes.deleteMany(); // Limpa a tabela `Mes`
+
   const meses = [
     { cod_mes: 1, descricao: 'Janeiro' },
     { cod_mes: 2, descricao: 'Fevereiro' },
@@ -21,12 +20,9 @@ export async function mesSeeder() {
     { cod_mes: 12, descricao: 'Dezembro' },
   ];
 
-   
-  for (const mes of meses) {
-    await prisma.mes.create({
-      data: mes,
-    });
-  }
+  await prisma.mes.createMany({
+    data: meses,
+  });
 
   console.log('Meses seedados com sucesso!');
 }
