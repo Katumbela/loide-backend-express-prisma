@@ -43,7 +43,6 @@ model Matricula {
   cod_aluno   Int
   data        DateTime
   cod_periodo Int
-
   aluno    Aluno     @relation(fields: [cod_aluno], references: [cod_aluno])
   curso    Curso     @relation(fields: [cod_curso], references: [cod_curso])
   periodo  Periodo   @relation(fields: [cod_periodo], references: [cod_periodo])
