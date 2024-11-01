@@ -13,12 +13,16 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 export const create = async (req: Request, res: Response): Promise<void> => {
   const { valor, n_matricula, cod_mes, forma_pagamento } = req.body;
 
+  const matriculaId = parseInt(n_matricula, 10);
+  const mesId = parseInt(cod_mes, 10);
+  const value = parseInt(valor, 10);
+
   try {
-     
+
     const existingRecord = await prisma.propina.findFirst({
       where: {
-        cod_mes,
-        n_matricula
+        n_matricula: matriculaId,
+        cod_mes: mesId
       }
     });
 
@@ -26,9 +30,9 @@ export const create = async (req: Request, res: Response): Promise<void> => {
     if (!existingRecord) {
       const propina = await prisma.propina.create({
         data: {
-          valor,
-          n_matricula,
-          cod_mes,
+          valor: value,
+          n_matricula: matriculaId,
+          cod_mes: mesId,
           forma_pagamento
         }
       });
@@ -41,13 +45,13 @@ export const create = async (req: Request, res: Response): Promise<void> => {
       res.status(208).json({ status: false, message: 'Já existe um registro com o pagamento deste mês' });
     }
   } catch (error: any) {
+    console.log(error.message)
     res.status(500).json({ status: false, message: "Erro ao pagar propina", error: error.message });
   }
 };
 
 export const show = async (req: Request, res: Response): Promise<void> => {
   const { cod_propina } = req.params;
-
   try {
     const propina = await prisma.propina.findUnique({
       where: { cod_propina: Number(cod_propina) },
