@@ -3,20 +3,20 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import prisma from '../../prisma/client';
 
-const { JWT_SECRET } = process.env;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!name || !email || !password) {
       res.status(400).json({ status: false, message: "Todos os campos são obrigatórios" });
       return;
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { name, email, password: hashedPassword }
+      data: { name, email, role, password }
     });
 
     res.json({ status: true, message: "Usuário registrado com sucesso", user });
@@ -28,17 +28,19 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
+    console.log(email, password)
     const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user || password !== user.password) {
       res.status(400).json({ status: false, message: "Credenciais inválidas" });
       return;
     }
 
-    const token = jwt.sign({ id: user.id }, JWT_SECRET as string, { expiresIn: '1h' });
+    const token = jwt.sign({ email: user.email }, JWT_SECRET as string, { expiresIn: '1h' });
 
-    res.json({ status: true, message: "Usuário autenticado com sucesso", token });
+    res.json({ status: true, message: "Usuário autenticado com sucesso", token, user });
   } catch (error: any) {
+    console.log(error.message, "erro")
     res.status(500).json({ status: false, message: "Erro ao fazer login", error: (error as Error).message });
   }
 };
