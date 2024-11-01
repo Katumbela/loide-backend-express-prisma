@@ -18,6 +18,7 @@ model User {
   name            String
   email           String    @unique
   password        String
+  role            String
   emailVerifiedAt DateTime? @map("email_verified_at")
   rememberToken   String?   @map("remember_token")
   createdAt       DateTime  @default(now()) @map("created_at")
