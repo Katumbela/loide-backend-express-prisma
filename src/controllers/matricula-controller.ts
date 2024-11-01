@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../../prisma/client';  
+import prisma from '../../prisma/client';
 
 export const index = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -45,7 +45,7 @@ export const create = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const show = async (req: Request, res: Response): Promise<void> => {
-  
+
   const { cod_matricula } = req.params;
 
   try {
